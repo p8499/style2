@@ -7,8 +7,9 @@ class Environment(val name: String, val styleList: List<Style> = listOf()) {
     operator fun plus(style: Style): Environment = Environment(name, styleList + style)
     operator fun plus(environment: Environment): Environment = Environment(name, styleList + environment.styleList)
     operator fun minus(style: Style) = Environment(name, styleList - style)
-    fun print(folder: File = File(System.getProperty("java.io.tmpdir"), name)) {
+    fun print(folder: File = File(System.getProperty("java.io.tmpdir"), name)): File {
         folder.delete()
         styleList.forEach { it.print(folder, this) }
+        return folder
     }
 }
