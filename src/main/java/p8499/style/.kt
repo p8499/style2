@@ -6,6 +6,10 @@ interface StyleItem {
     fun text(environment: Environment, style: Style): String
 }
 
+fun String?.styleItem() = object : StyleItem {
+    override fun text(environment: Environment, style: Style): String = this@styleItem ?: "@null"
+}
+
 interface Selector {
     val name: String
     fun print(folder: File, environment: Environment, style: Style): File
