@@ -5,11 +5,11 @@ import p8499.style.dp
 import javax.xml.transform.sax.TransformerHandler
 
 class LayerItem(
-        var top: String = 0.dp,
-        var bottom: String = 0.dp,
-        var left: String = 0.dp,
-        var right: String = 0.dp,
-        var shape: Shape = rectangle()) : Cloneable, Root {
+        val top: String = 0.dp,
+        val bottom: String = 0.dp,
+        val left: String = 0.dp,
+        val right: String = 0.dp,
+        val shape: Shape = rectangle()) : Cloneable, Root {
     override public fun clone(): LayerItem = LayerItem(top, bottom, left, right, shape)
     override fun output(handler: TransformerHandler) {
         val attrsItem = AttributesImpl().also {

@@ -4,7 +4,7 @@ import com.greenbird.xml.prettyprinter.PrettyPrinterFactory
 import p8499.style.color.Color
 import java.io.File
 
-class ColorSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Color>) : StyleItem, Selector {
+class ColorSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Color> = mapOf()) : StyleItem, Selector {
     fun clone(name: String): ColorSelector = ColorSelector(name, map)
     operator fun plus(color: Color): ColorSelector = plus(Pair(emptyCondition, color))
     operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Color>): ColorSelector = ColorSelector(name, map + pair)

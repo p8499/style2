@@ -8,7 +8,7 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
-class ResourceDrawable(var root: Root) : Cloneable, Drawable {
+class ResourceDrawable(val root: Root) : Cloneable, Drawable {
     override fun clone(): ResourceDrawable = ResourceDrawable(root)
 
     override fun print(folder: File, environment: Environment, style: Style, selector: DrawableSelector, index: Int): File? {

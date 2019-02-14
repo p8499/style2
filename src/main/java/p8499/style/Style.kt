@@ -3,7 +3,7 @@ package p8499.style
 import com.greenbird.xml.prettyprinter.PrettyPrinterFactory
 import java.io.File
 
-class Style(val name: String, val map: Map<String, StyleItem>) {
+class Style(val name: String, val map: Map<String, StyleItem> = mapOf()) {
     fun clone(name: String): Style = Style(name, map)
     operator fun plus(pair: Pair<String, StyleItem>): Style = Style(name, map + pair)
     operator fun plus(style: Style): Style = Style(name, map + style.map)

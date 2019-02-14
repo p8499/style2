@@ -7,18 +7,18 @@ import p8499.style.dp
 import javax.xml.transform.sax.TransformerHandler
 
 class Shape(
-        var shapeType: ShapeType = ShapeType.Rectangle,
-        var paddingTop: String = 0.dp,
-        var paddingBottom: String = 0.dp,
-        var paddingLeft: String = 0.dp,
-        var paddingRight: String = 0.dp,
-        var backgroundColor: Color = Argb(0, 0, 0, 0),
-        var borderWidth: String = 0.dp,
-        var borderColor: Color = Argb(0, 0, 0, 0),
-        var radiusTopLeft: String = 0.dp,
-        var radiusTopRight: String = 0.dp,
-        var radiusBottomLeft: String = 0.dp,
-        var radiusBottomRight: String = 0.dp) : Cloneable, Root {
+        val shapeType: ShapeType = ShapeType.Rectangle,
+        val paddingTop: String = 0.dp,
+        val paddingBottom: String = 0.dp,
+        val paddingLeft: String = 0.dp,
+        val paddingRight: String = 0.dp,
+        val backgroundColor: Color = Argb(0, 0, 0, 0),
+        val borderWidth: String = 0.dp,
+        val borderColor: Color = Argb(0, 0, 0, 0),
+        val radiusTopLeft: String = 0.dp,
+        val radiusTopRight: String = 0.dp,
+        val radiusBottomLeft: String = 0.dp,
+        val radiusBottomRight: String = 0.dp) : Cloneable, Root {
     override fun clone(): Shape = Shape(shapeType, paddingTop, paddingBottom, paddingLeft, paddingRight, backgroundColor, borderWidth, borderColor, radiusTopLeft, radiusTopRight, radiusBottomLeft, radiusBottomRight)
 
     override public fun output(handler: TransformerHandler) {

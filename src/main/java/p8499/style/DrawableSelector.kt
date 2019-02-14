@@ -2,10 +2,13 @@ package p8499.style
 
 import com.greenbird.xml.prettyprinter.PrettyPrinterFactory
 import p8499.style.drawable.Drawable
+import p8499.style.drawable.ResourceDrawable
+import p8499.style.drawable.Root
 import java.io.File
 
-class DrawableSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Drawable>) : StyleItem, Selector {
+class DrawableSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Drawable> = mapOf()) : StyleItem, Selector {
     fun clone(name: String): DrawableSelector = DrawableSelector(name, map)
+    operator fun plus(root: Root): DrawableSelector = plus(Pair(emptyCondition, ResourceDrawable(root)))
     operator fun plus(drawable: Drawable): DrawableSelector = plus(Pair(emptyCondition, drawable))
     operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Drawable>): DrawableSelector = DrawableSelector(name, map + pair)
     operator fun minus(condition: Set<Pair<String, Boolean>>): DrawableSelector = DrawableSelector(name, map.toMutableMap().also { it.remove(condition) })
