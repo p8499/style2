@@ -6,8 +6,8 @@ interface StyleItem {
     fun text(environment: Environment, style: Style): String
 }
 
-fun String?.styleItem() = object : StyleItem {
-    override fun text(environment: Environment, style: Style): String = this@styleItem ?: "@null"
+fun Any?.styleItem() = object : StyleItem {
+    override fun text(environment: Environment, style: Style): String = this@styleItem?.toString() ?: "@null"
 }
 
 interface Selector {
