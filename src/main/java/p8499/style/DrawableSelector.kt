@@ -28,7 +28,7 @@ class DrawableSelector(override val name: String, val map: Map<Set<Pair<String, 
         unformatted.append("</selector>")
         val formatted = java.lang.StringBuilder().also { PrettyPrinterFactory.newInstance().newPrettyPrinter().process(unformatted.toString(), it) }
         val file = File(folder, "drawable${File.separator}${style.name}_$name.xml")
-        file.parentFile.takeIf { it.exists() }?.mkdirs()
+        file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
         file.writeBytes(formatted.toString().toByteArray())
         return file

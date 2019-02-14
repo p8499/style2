@@ -13,7 +13,7 @@ class ResourceDrawable(val root: Root) : Cloneable, Drawable {
 
     override fun print(folder: File, environment: Environment, style: Style, selector: DrawableSelector, index: Int): File? {
         val file = File(folder, "drawable${File.separator}${style.name}_${selector.name}_$index.xml")
-        file.parentFile.takeIf { it.exists() }?.mkdirs()
+        file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
         val outputStream = file.outputStream()
         val tff = SAXTransformerFactory.newInstance() as SAXTransformerFactory

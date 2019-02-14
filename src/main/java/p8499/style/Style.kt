@@ -20,7 +20,7 @@ class Style(val name: String, val map: Map<String, StyleItem> = mapOf()) {
         unformatted.append("</selector>")
         val formatted = java.lang.StringBuilder().also { PrettyPrinterFactory.newInstance().newPrettyPrinter().process(unformatted.toString(), it) }
         val file = File(folder, "values${File.separator}style_$name.xml")
-        file.parentFile.takeIf { it.exists() }?.mkdirs()
+        file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
         file.writeBytes(formatted.toString().toByteArray())
         return file
