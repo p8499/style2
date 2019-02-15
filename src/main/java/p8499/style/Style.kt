@@ -6,11 +6,13 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
-class Style(val name: String, val map: Map<String, StyleItem> = mapOf()) {
-    fun clone(name: String): Style = Style(name, map)
-    operator fun plus(pair: Pair<String, StyleItem>): Style = Style(name, map + pair)
-    operator fun plus(style: Style): Style = Style(name, map + style.map)
-    operator fun minus(itemName: String) = Style(name, map - itemName)
+class Style(val parent: String? = null, val name: String, val map: Map<String, StyleItem> = mapOf()) {
+    constructor(name: String, map: Map<String, StyleItem> = mapOf()) : this(null, name, map)
+
+    fun clone(name: String): Style = Style(parent, name, map)
+    operator fun plus(pair: Pair<String, StyleItem>): Style = Style(parent, name, map + pair)
+    operator fun plus(style: Style): Style = Style(parent, name, map + style.map)
+    operator fun minus(itemName: String) = Style(parent, name, map - itemName)
 
     fun print(folder: File, environment: Environment): File {
         val file = File(folder, "values${File.separator}style_$name.xml")
@@ -31,6 +33,7 @@ class Style(val name: String, val map: Map<String, StyleItem> = mapOf()) {
         handler.startElement("", "", "resources", attrsResources)
         val attrsStyle = AttributesImpl().also {
             it.addAttribute("", "", "name", "", name)
+            parent?.also { parent -> it.addAttribute("", "", "parent", "", parent) }
         }
         handler.startElement("", "", "style", attrsStyle)
         map.forEach { itemName, item ->
