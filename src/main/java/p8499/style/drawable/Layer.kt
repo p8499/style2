@@ -4,13 +4,13 @@ import org.xml.sax.helpers.AttributesImpl
 import p8499.style.dp
 import javax.xml.transform.sax.TransformerHandler
 
-class LayerItem(
+class Layer(
         val top: String = 0.dp,
         val bottom: String = 0.dp,
         val left: String = 0.dp,
         val right: String = 0.dp,
-        val shape: Shape = rectangle()) : Cloneable, Root {
-    override public fun clone(): LayerItem = LayerItem(top, bottom, left, right, shape)
+        val shape: Shape = Shape()) : Cloneable, Root {
+    override public fun clone(): Layer = Layer(top, bottom, left, right, shape)
     override fun output(handler: TransformerHandler) {
         val attrsItem = AttributesImpl().also {
             it.addAttribute("", "", "android:top", "", top)
