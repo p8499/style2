@@ -9,6 +9,7 @@ import javax.xml.transform.sax.TransformerHandler
 
 enum class ShapeType { Rectangle }
 interface Drawable {
+    fun text(environment: Environment, style: Style, selector: DrawableSelector, index: Int): String
     fun print(folder: File, environment: Environment, style: Style, selector: DrawableSelector, index: Int): File?
 }
 

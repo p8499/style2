@@ -10,7 +10,7 @@ import javax.xml.transform.stream.StreamResult
 
 class ResourceDrawable(val root: Root) : Cloneable, Drawable {
     override fun clone(): ResourceDrawable = ResourceDrawable(root)
-
+    override fun text(environment: Environment, style: Style, selector: DrawableSelector, index: Int): String = "@drawable/${style.name}_${selector.name}_$index"
     override fun print(folder: File, environment: Environment, style: Style, selector: DrawableSelector, index: Int): File? {
         val file = File(folder, "drawable${File.separator}${style.name}_${selector.name}_$index.xml")
         file.parentFile.takeUnless { it.exists() }?.mkdirs()
