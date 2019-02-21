@@ -32,6 +32,8 @@ fun corners(vararg attrs: Pair<String, String>): Tag = Tag("corners", *attrs)
 fun corners(topLeftRadius: String, topRightRadius: String, bottomLeftRadius: String, bottomRightRadius: String): Tag = corners(android_topLeftRadius(topLeftRadius), android_topRightRadius(topRightRadius), android_bottomLeftRadius(bottomLeftRadius), android_bottomRightRadius(bottomRightRadius))
 fun corners(radius: String): Tag = corners(android_radius(radius))
 fun stroke(vararg attrs: Pair<String, String>): Tag = Tag("stroke", *attrs)
+fun stroke(color: Color, width: String): Tag = stroke(android_color(color), android_width(width))
+fun stroke(color: Color, width: String, dashWidth: String, dashGap: String): Tag = stroke(android_color(color), android_width(width), android_dashWidth(dashWidth), android_dashGap(dashGap))
 fun item(vararg attrs: Pair<String, String>): Tag = Tag("item", *attrs)
 fun layer_list(vararg attrs: Pair<String, String>): Tag = Tag("layer-list", *attrs)
 
