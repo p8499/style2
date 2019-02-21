@@ -110,3 +110,6 @@ fun android_contentDescription(item: StyleItem): Style = Style("", mapOf("androi
 fun android_hint(item: StyleItem): Style = Style("", mapOf("android:hint" to item))
 fun android_singleLine(item: StyleItem): Style = Style("", mapOf("android:singleLine" to item))
 fun android_drawableTop(item: StyleItem): Style = Style("", mapOf("android:drawableTop" to item))
+fun android_drawableBottom(item: StyleItem): Style = Style("", mapOf("android:drawableBottom" to item))
+fun android_drawableStart(item: StyleItem): Style = Style("", mapOf("android:drawableStart" to item))
+fun android_drawableEnd(item: StyleItem): Style = Style("", mapOf("android:drawableEnd" to item))
