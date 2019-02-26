@@ -17,6 +17,8 @@ class Argb(val a: Int, val r: Int, val g: Int, val b: Int) : Cloneable, Color {
     }
 
     override public fun clone(): Argb = Argb(a, r, g, b)
+    fun lighter(radio: Float): Argb = hsl().lighter(radio).argb()
+    fun darker(radio: Float): Argb = hsl().darker(radio).argb()
 
     fun hsl(): Hsl {
         val r = r / 255f

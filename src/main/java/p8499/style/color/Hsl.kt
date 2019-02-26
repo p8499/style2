@@ -4,7 +4,8 @@ data class Hsl(val h: Float, val s: Float, val l: Float) : Cloneable, Color {
     override fun toString(): String = argb().toString()
 
     override public fun clone(): Hsl = Hsl(h, s, l)
-
+    fun lighter(ratio: Float): Hsl = Hsl(h, s, l + (255 - l) * ratio)
+    fun darker(ratio: Float): Hsl = Hsl(h, s, l - l * ratio)
     fun argb(): Argb {
         val h2 = h / 255f
         val s2 = s / 255f
