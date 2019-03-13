@@ -13,8 +13,8 @@ class ColorSelector(override val name: String, val map: Map<Set<Pair<String, Boo
     operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Color>): ColorSelector = ColorSelector(name, map + pair)
     operator fun minus(condition: Set<Pair<String, Boolean>>): ColorSelector = ColorSelector(name, map.toMutableMap().also { it.remove(condition) })
 
-    override fun text(environment: Environment, style: Style): String = "@color/${style.name}_$name"
-    override fun print(folder: File, environment: Environment, style: Style): File {
+    override fun text(styleGroup: StyleGroup, style: Style): String = "@color/${style.name}_$name"
+    override fun print(folder: File, styleGroup: StyleGroup, style: Style): File {
         val file = File(folder, "color${File.separator}${style.name}_$name.xml")
         file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()

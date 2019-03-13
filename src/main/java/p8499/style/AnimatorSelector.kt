@@ -7,15 +7,15 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
-class DrawableSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Node> = mapOf()) : StyleItem, Selector {
-    fun clone(name: String): DrawableSelector = DrawableSelector(name, map)
-    operator fun plus(node: Node): DrawableSelector = plus(Pair(emptyCondition, node))
-    operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Node>): DrawableSelector = DrawableSelector(name, map + pair)
-    operator fun minus(condition: Set<Pair<String, Boolean>>): DrawableSelector = DrawableSelector(name, map.toMutableMap().also { it.remove(condition) })
+class AnimatorSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Node> = mapOf()) : StyleItem, Selector {
+    fun clone(name: String): AnimatorSelector = AnimatorSelector(name, map)
+    operator fun plus(node: Node): AnimatorSelector = plus(Pair(emptyCondition, node))
+    operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Node>): AnimatorSelector = AnimatorSelector(name, map + pair)
+    operator fun minus(condition: Set<Pair<String, Boolean>>): AnimatorSelector = AnimatorSelector(name, map.toMutableMap().also { it.remove(condition) })
 
-    override fun text(styleGroup: StyleGroup, style: Style): String = "@drawable/${style.name}_$name"
+    override fun text(styleGroup: StyleGroup, style: Style): String = "@animator/${style.name}_$name"
     override fun print(folder: File, styleGroup: StyleGroup, style: Style): File {
-        val file = File(folder, "drawable${File.separator}${style.name}_$name.xml")
+        val file = File(folder, "animator${File.separator}${style.name}_$name.xml")
         file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
         val outputStream = file.outputStream()

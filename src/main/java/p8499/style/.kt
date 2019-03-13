@@ -1,20 +1,20 @@
 package p8499.style
 
 import p8499.style.color.Color
-import p8499.style.drawable.Drawable
+import p8499.style.xml.Node
 import java.io.File
 
 interface StyleItem {
-    fun text(environment: Environment, style: Style): String
+    fun text(styleGroup: StyleGroup, style: Style): String
 }
 
 fun Any?.styleItem() = object : StyleItem {
-    override fun text(environment: Environment, style: Style): String = this@styleItem?.toString() ?: "@null"
+    override fun text(styleGroup: StyleGroup, style: Style): String = this@styleItem?.toString() ?: "@null"
 }
 
 interface Selector {
     val name: String
-    fun print(folder: File, environment: Environment, style: Style): File
+    fun print(folder: File, styleGroup: StyleGroup, style: Style): File
 }
 
 val Int.dp: String get() = "${this}dp"
@@ -47,8 +47,9 @@ operator fun Set<Pair<String, Boolean>>.plus(new: Pair<String, Boolean>): Set<Pa
 operator fun Set<Pair<String, Boolean>>.minus(target: Pair<String, Boolean>): Set<Pair<String, Boolean>> = dropWhile { it == target }.toSet()
 val emptyCondition: Set<Pair<String, Boolean>> = setOf()
 fun Pair<String, Boolean>.condition(): Set<Pair<String, Boolean>> = setOf(this)
-fun Map<Set<Pair<String, Boolean>>, Drawable>.selector(name: String) = DrawableSelector(name, this)
-fun Map<Set<Pair<String, Boolean>>, Color>.selector(name: String) = ColorSelector(name, this)
+fun Map<Set<Pair<String, Boolean>>, Node>.drawableSelector(name: String) = DrawableSelector(name, this)
+fun Map<Set<Pair<String, Boolean>>, Node>.animatorSelector(name: String) = AnimatorSelector(name, this)
+fun Map<Set<Pair<String, Boolean>>, Color>.colorSelector(name: String) = ColorSelector(name, this)
 
 fun android_layout_width(item: StyleItem): Style = Style("", mapOf("android:layout_width" to item))
 fun android_layout_height(item: StyleItem): Style = Style("", mapOf("android:layout_height" to item))
@@ -70,6 +71,7 @@ fun android_paddingTop(item: StyleItem): Style = Style("", mapOf("android:paddin
 fun android_paddingBottom(item: StyleItem): Style = Style("", mapOf("android:paddingBottom" to item))
 fun android_enabled(item: StyleItem): Style = Style("", mapOf("android:enabled" to item))
 fun android_orientation(item: StyleItem): Style = Style("", mapOf("android:orientation" to item))
+fun android_elevation(item: StyleItem): Style = Style("", mapOf("android:elevation" to item))
 fun android_baselineAligned(item: StyleItem): Style = Style("", mapOf("android:baselineAligned" to item))
 fun android_layout_alignParentStart(item: StyleItem): Style = Style("", mapOf("android:layout_alignParentStart" to item))
 fun android_layout_alignParentEnd(item: StyleItem): Style = Style("", mapOf("android:layout_alignParentEnd" to item))
@@ -81,12 +83,15 @@ fun android_clickable(item: StyleItem): Style = Style("", mapOf("android:clickab
 fun android_longClickable(item: StyleItem): Style = Style("", mapOf("android:longClickable" to item))
 fun android_contextClickable(item: StyleItem): Style = Style("", mapOf("android:contextClickable" to item))
 fun android_background(item: StyleItem): Style = Style("", mapOf("android:background" to item))
+fun android_stateListAnimator(item: StyleItem): Style = Style("", mapOf("android:stateListAnimator" to item))
 fun android_inputType(item: StyleItem): Style = Style("", mapOf("android:inputType" to item))
 fun android_imeOptions(item: StyleItem): Style = Style("", mapOf("android:imeOptions" to item))
 fun android_textAllCaps(item: StyleItem): Style = Style("", mapOf("android:textAllCaps" to item))
+fun android_textStyle(item: StyleItem): Style = Style("", mapOf("android:textStyle" to item))
 fun android_textSize(item: StyleItem): Style = Style("", mapOf("android:textSize" to item))
 fun android_textColor(item: StyleItem): Style = Style("", mapOf("android:textColor" to item))
 fun android_textColorHint(item: StyleItem): Style = Style("", mapOf("android:textColorHint" to item))
+fun android_lineSpacingExtra(item: StyleItem): Style = Style("", mapOf("android:lineSpacingExtra" to item))
 fun android_src(item: StyleItem): Style = Style("", mapOf("android:src" to item))
 fun android_typeface(item: StyleItem): Style = Style("", mapOf("android:typeface" to item))
 fun android_ellipsize(item: StyleItem): Style = Style("", mapOf("android:ellipsize" to item))
