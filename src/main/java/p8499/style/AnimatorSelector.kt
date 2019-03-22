@@ -1,21 +1,29 @@
 package p8499.style
 
 import org.xml.sax.helpers.AttributesImpl
-import p8499.style.xml.Node
+import p8499.style.xml.Tag
 import java.io.File
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
-class AnimatorSelector(override val name: String, val map: Map<Set<Pair<String, Boolean>>, Node> = mapOf()) : StyleItem, Selector {
-    fun clone(name: String): AnimatorSelector = AnimatorSelector(name, map)
-    operator fun plus(node: Node): AnimatorSelector = plus(Pair(emptyCondition, node))
-    operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Node>): AnimatorSelector = AnimatorSelector(name, map + pair)
+class AnimatorSelector(override val name: String, val map: MutableMap<Set<Pair<String, Boolean>>, Tag> = mutableMapOf()) : StyleItem, Resource {
+    fun clone(name: String): AnimatorSelector = AnimatorSelector(name, map.toMutableMap())
+    operator fun plusAssign(node: Tag) = plusAssign(Pair(emptyCondition, node))
+    operator fun plusAssign(pair: Pair<Set<Pair<String, Boolean>>, Tag>) = plusAssign(listOf(pair))
+    operator fun plusAssign(selector: AnimatorSelector) = plusAssign(selector.map.map { it.key to it.value })
+    operator fun plusAssign(pairs: Iterable<Pair<Set<Pair<String, Boolean>>, Tag>>) = pairs.forEach { pair -> map += pair.first to (map[pair.first]?.merge(pair.second) ?: pair.second) }
+    operator fun minusAssign(condition: Set<Pair<String, Boolean>>) = map.minusAssign(condition)
+    operator fun plus(node: Tag): AnimatorSelector = plus(Pair(emptyCondition, node))
+    operator fun plus(pair: Pair<Set<Pair<String, Boolean>>, Tag>): AnimatorSelector = plus(listOf(pair))
+    operator fun plus(selector: AnimatorSelector): AnimatorSelector = plus(selector.map.map { it.key to it.value })
+    operator fun plus(pairs: Iterable<Pair<Set<Pair<String, Boolean>>, Tag>>) = AnimatorSelector(name, map.toMutableMap().also { pairs.forEach { pair -> it += pair.first to (it[pair.first]?.merge(pair.second) ?: pair.second) } })
     operator fun minus(condition: Set<Pair<String, Boolean>>): AnimatorSelector = AnimatorSelector(name, map.toMutableMap().also { it.remove(condition) })
 
-    override fun text(styleGroup: StyleGroup, style: Style): String = "@animator/${style.name}_$name"
-    override fun print(folder: File, styleGroup: StyleGroup, style: Style): File {
-        val file = File(folder, "animator${File.separator}${style.name}_$name.xml")
+    override fun text(): String = "@animator/$name"
+    fun normalize(): StyleItem = text().styleItem()
+    override fun print(folder: File): File {
+        val file = File(folder, "animator${File.separator}$name.xml")
         file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
         val outputStream = file.outputStream()

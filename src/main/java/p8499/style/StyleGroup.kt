@@ -6,14 +6,14 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
-class StyleGroup(val name: String, val styleList: List<Style> = listOf()) {
-    constructor(name: String, vararg styles: Style) : this(name, styles.asList())
+class StyleGroup(val name: String, val styleList: MutableList<Style> = mutableListOf()) {
+    constructor(name: String, vararg styles: Style) : this(name, styles.toMutableList())
 
-    fun clone(name: String, folder: File): StyleGroup = StyleGroup(name, styleList)
-    operator fun plus(style: Style): StyleGroup = StyleGroup(name, styleList + style)
-    operator fun plus(styleGroup: StyleGroup): StyleGroup = StyleGroup(name, styleList + styleGroup.styleList)
-    operator fun minus(style: Style) = StyleGroup(name, styleList - style)
-    fun print(folder: File = File(System.getProperty("java.io.tmpdir"))): File {
+    fun clone(name: String): StyleGroup = StyleGroup(name, styleList.toMutableList())
+    operator fun plusAssign(style: Style) = styleList.plusAssign(style)
+    operator fun plusAssign(styleGroup: StyleGroup) = styleList.plusAssign(styleGroup.styleList)
+    operator fun minusAssign(style: Style) = styleList.minusAssign(style)
+    fun print(folder: File): File {
         val file = File(folder, "values${File.separator}style_$name.xml")
         file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
@@ -30,8 +30,7 @@ class StyleGroup(val name: String, val styleList: List<Style> = listOf()) {
         handler.startPrefixMapping("android", "http://schemas.android.com/apk/res/android")
         val attrsResources = AttributesImpl()
         handler.startElement("", "", "resources", attrsResources)
-
-        styleList.forEach { it.output(folder, this, handler) }
+        styleList.forEach { it.output(folder, handler) }
         handler.endElement("", "", "resources")
         handler.endDocument()
         outputStream.flush()

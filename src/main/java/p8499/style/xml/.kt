@@ -7,11 +7,7 @@ interface Node {
     fun output(handler: TransformerHandler)
 }
 
-fun String.node(): Node = object : Node {
-    override fun output(handler: TransformerHandler) {
-        handler.characters(toCharArray(), 0, length)
-    }
-}
+fun String.node(): Node = Text(this)
 
 fun set(vararg attrs: Pair<String, String>): Tag = Tag("set", *attrs)
 fun set(ordering: String): Tag = set(android_ordering(ordering))
@@ -39,6 +35,9 @@ fun layer_list(vararg attrs: Pair<String, String>): Tag = Tag("layer-list", *att
 fun objectAnimator(vararg attrs: Pair<String, String>): Tag = Tag("objectAnimator", *attrs)
 fun animator(vararg attrs: Pair<String, String>): Tag = Tag("animator", *attrs)
 fun propertyValuesHolder(vararg attrs: Pair<String, String>): Tag = Tag("propertyValuesHolder", *attrs)
+fun vector(vararg attrs: Pair<String, String>): Tag = Tag("vector", *attrs)
+fun path(vararg attrs: Pair<String, String>): Tag = Tag("path", *attrs)
+
 
 fun android_ordering(v: Any?) = "android:ordering" to (v?.toString() ?: "@null")
 fun android_shape(v: Any?) = "android:shape" to (v?.toString() ?: "@null")
@@ -77,3 +76,22 @@ fun android_duration(v: Any?) = "android:duration" to (v?.toString() ?: "@null")
 fun android_repeatCount(v: Any?) = "android:repeatCount" to (v?.toString() ?: "@null")
 fun android_repeatMode(v: Any?) = "android:repeatMode" to (v?.toString() ?: "@null")
 fun android_startOffset(v: Any?) = "android:startOffset" to (v?.toString() ?: "@null")
+fun android_viewportWidth(v: Any?) = "android:viewportWidth" to (v?.toString() ?: "@null")
+fun android_viewportHeight(v: Any?) = "android:viewportHeight" to (v?.toString() ?: "@null")
+fun android_name(v: Any?) = "android:name" to (v?.toString() ?: "@null")
+fun android_alpha(v: Any?) = "android:alpha" to (v?.toString() ?: "@null")
+fun android_autoMirrored(v: Any?) = "android:autoMirrored" to (v?.toString() ?: "@null")
+fun android_tint(v: Any?) = "android:tint" to (v?.toString() ?: "@null")
+fun android_tintMode(v: Any?) = "android:tintMode" to (v?.toString() ?: "@null")
+fun android_fillColor(v: Any?) = "android:fillColor" to (v?.toString() ?: "@null")
+fun android_strokeColor(v: Any?) = "android:strokeColor" to (v?.toString() ?: "@null")
+fun android_strokeWidth(v: Any?) = "android:strokeWidth" to (v?.toString() ?: "@null")
+fun android_fillAlpha(v: Any?) = "android:fillAlpha" to (v?.toString() ?: "@null")
+fun android_fillType(v: Any?) = "android:fillType" to (v?.toString() ?: "@null")
+fun android_strokeAlpha(v: Any?) = "android:strokeAlpha" to (v?.toString() ?: "@null")
+fun android_strokeLineCap(v: Any?) = "android:strokeLineCap" to (v?.toString() ?: "@null")
+fun android_strokeLineJoin(v: Any?) = "android:strokeLineJoin" to (v?.toString() ?: "@null")
+fun android_strokeMiterLimit(v: Any?) = "android:strokeMiterLimit" to (v?.toString() ?: "@null")
+fun android_trimPathStart(v: Any?) = "android:trimPathStart" to (v?.toString() ?: "@null")
+fun android_trimPathEnd(v: Any?) = "android:trimPathEnd" to (v?.toString() ?: "@null")
+fun android_trimPathOffset(v: Any?) = "android:trimPathOffset" to (v?.toString() ?: "@null")

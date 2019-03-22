@@ -1,19 +1,17 @@
 package p8499.style
 
-import org.xml.sax.helpers.AttributesImpl
-import p8499.style.color.Color
+import p8499.style.xml.Tag
 import java.io.File
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.sax.SAXTransformerFactory
 import javax.xml.transform.stream.StreamResult
 
-class ColorSelector(override val name: String, val map: MutableMap<Set<Pair<String, Boolean>>, Color> = mutableMapOf()) : StyleItem, Resource {
-    fun clone(name: String): ColorSelector = ColorSelector(name, map.toMutableMap())
-
-    override fun text(): String = "@color/$name"
+class Animator(override val name: String, val node: Tag) : StyleItem, Resource {
+    fun clone(name: String): Animator = Animator(name, node)
+    override fun text(): String = "@animator/$name"
     fun normalize(): StyleItem = text().styleItem()
     override fun print(folder: File): File {
-        val file = File(folder, "color${File.separator}$name.xml")
+        val file = File(folder, "animator${File.separator}$name.xml")
         file.parentFile.takeUnless { it.exists() }?.mkdirs()
         file.createNewFile()
         val outputStream = file.outputStream()
@@ -27,17 +25,7 @@ class ColorSelector(override val name: String, val map: MutableMap<Set<Pair<Stri
         handler.setResult(StreamResult(outputStream))
         handler.startDocument()
         handler.startPrefixMapping("android", "http://schemas.android.com/apk/res/android")
-        val attrsSelector = AttributesImpl()
-        handler.startElement("", "", "selector", attrsSelector)
-        map.forEach { condition, color ->
-            val attrsItem = AttributesImpl().also {
-                it.addAttribute("", "", "android:color", "", color.toString())
-                condition.forEach { c -> it.addAttribute("", "", c.first, "", c.second.toString()) }
-            }
-            handler.startElement("", "", "item", attrsItem)
-            handler.endElement("", "", "item")
-        }
-        handler.endElement("", "", "selector")
+        node.output(handler)
         handler.endDocument()
         outputStream.flush()
         outputStream.close()

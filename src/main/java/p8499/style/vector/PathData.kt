@@ -1,127 +1,123 @@
 package p8499.style.vector
 
-class PathData(var point: Pair<Float, Float> = 0f to 0f, private var oldPoint: Pair<Float, Float>? = null, val builder: StringBuilder = StringBuilder()) {
-    private fun goto(x: Float, y: Float) {
-        point = x to y
-    }
+import java.lang.Math.PI
 
-    private fun move(x: Float, y: Float) {
-        point = point.first + x to point.second + y
-    }
-
-    private fun backup() {
-        oldPoint = point
-    }
-
-    private fun restore() {
-        oldPoint?.also { M(it.first, it.second) }
-        oldPoint = null
-    }
-
+class PathData(var startPoint: Point = origin, var point: Point = origin, val builder: StringBuilder = StringBuilder()) {
     fun output(): String = builder.toString()
 
-    fun M(x: Float, y: Float) {
+    fun M(x: Double, y: Double) {
         builder.append("M${x.d},${y.d}")
-        goto(x, y)
+        startPoint = Point(x, y)
+        point = Point(x, y)
     }
 
-    fun m(x: Float, y: Float) {
+    fun m(x: Double, y: Double) {
         builder.append("m${x.d},${y.d}")
-        move(x, y)
+        startPoint += Point(x, y)
+        point += Point(x, y)
     }
 
     fun Z() {
         builder.append("Z")
+        point = startPoint
     }
 
     fun z() {
         builder.append("z")
+        point = startPoint
     }
 
-    fun L(x: Float, y: Float) {
+    fun L(x: Double, y: Double) {
         builder.append("L${x.d},${y.d}")
+        point = Point(x, y)
     }
 
-    fun l(x: Float, y: Float) {
+    fun l(x: Double, y: Double) {
         builder.append("l${x.d},${y.d}")
+        point += Point(x, y)
     }
 
-    fun H(x: Float) {
+    fun H(x: Double) {
         builder.append("H${x.d}")
+        point = Point(x, point.y)
     }
 
-    fun h(x: Float) {
+    fun h(x: Double) {
         builder.append("h${x.d}")
+        point += Point(x, 0.0)
     }
 
-    fun V(y: Float) {
+    fun V(y: Double) {
         builder.append("V${y.d}")
+        point = Point(point.x, y)
     }
 
-    fun v(y: Float) {
+    fun v(y: Double) {
         builder.append("v${y.d}")
+        point += Point(0.0, y)
     }
 
-    fun A(rx: Float, ry: Float, x_axis_rotation: Int, large_arc_flag: Boolean, sweep_flag: Boolean, x: Float, y: Float) {
+    fun Q(x1: Double, y1: Double, x: Double, y: Double) {
+        builder.append("Q${x1.d},${y1.d},${x.d},${y.d}")
+        point = Point(x, y)
+    }
+
+    fun q(x1: Double, y1: Double, x: Double, y: Double) {
+        builder.append("q${x1.d},${y1.d},${x.d},${y.d}")
+        point += Point(x, y)
+    }
+
+    fun A(rx: Double, ry: Double, x_axis_rotation: Int, large_arc_flag: Boolean, sweep_flag: Boolean, x: Double, y: Double) {
         builder.append("A${rx.d},${ry.d},${x_axis_rotation.d},${large_arc_flag.d},${sweep_flag.d},${x.d},${y.d}")
+        point = Point(x, y)
     }
 
-    fun a(rx: Float, ry: Float, x_axis_rotation: Int, large_arc_flag: Boolean, sweep_flag: Boolean, x: Float, y: Float) {
+    fun a(rx: Double, ry: Double, x_axis_rotation: Int, large_arc_flag: Boolean, sweep_flag: Boolean, x: Double, y: Double) {
         builder.append("a${rx.d},${ry.d},${x_axis_rotation.d},${large_arc_flag.d},${sweep_flag.d},${x.d},${y.d}")
+        point += Point(x, y)
     }
 
-    fun circle(x: Float, y: Float) {
-        val distance = Math.sqrt(Math.pow((point.first).toDouble(), 2.toDouble()) + Math.pow((point.second).toDouble(), 2.toDouble())).toFloat()
-        a(distance / 2, distance / 2, 0, false, false, x, y)
-        a(distance / 2, distance / 2, 0, false, false, -x, -y)
-        z()
-    }
-
-    fun ring(x: Float, y: Float, width: Float) {
-        val distanceOutter = Math.sqrt(Math.pow((x).toDouble(), 2.toDouble()) + Math.pow((y).toDouble(), 2.toDouble())).toFloat()
-        val distanceInner = distanceOutter - width * 2
-        val innerStartX = x * width / distanceOutter
-        val innerStartY = y * width / distanceOutter
-        val innerEndX = x * distanceInner / distanceOutter
-        val innerEndY = y * distanceInner / distanceOutter
-        a(distanceOutter / 2, distanceOutter / 2, 0, false, false, x, y)
-        a(distanceOutter / 2, distanceOutter / 2, 0, false, false, -x, -y)
-        z()
-        m(innerStartX, innerStartY)
-        a(distanceInner / 2, distanceInner / 2, 0, false, true, innerEndX, innerEndY)
-        a(distanceInner / 2, distanceInner / 2, 0, false, true, -innerEndX, -innerEndY)
+    fun Move(p: Point) = M(p.x, p.y)
+    fun move(p: Point) = m(p.x, p.y)
+    fun Line(p: Point) = L(p.x, p.y)
+    fun line(p: Point) = l(p.x, p.y)
+    fun Quadratic(p1: Point, p: Point) = Q(p1.x, p1.y, p.x, p.y)
+    fun quadratic(p1: Point, p: Point) = q(p1.x, p1.y, p.x, p.y)
+    fun Arc(p: Point, radius: Double = p.distance(point) / 2, largeArg: Boolean = false, sweep: Boolean = false) = A(radius, radius, 0, largeArg, sweep, p.x, p.y)
+    fun arc(p: Point, radius: Double = p.distance() / 2, largeArg: Boolean = false, sweep: Boolean = false) = a(radius, radius, 0, largeArg, sweep, p.x, p.y)
+    fun Circle(p: Point, sweep: Boolean = false) {
+        val p0 = point
+        Arc(p, sweep = sweep)
+        Arc(p0, sweep = sweep)
         z()
     }
 
-    fun sector(orientation: Int, angle: Int, side: Float) {
-        val startAngle = (orientation - angle / 2) * Math.PI / 180
-        val endAngle = (orientation + angle / 2) * Math.PI / 180
-        val startX = (Math.cos(startAngle) * side).toFloat()
-        val startY = (Math.sin(startAngle) * side).toFloat()
-        val endX = (Math.cos(endAngle) * side).toFloat()
-        val endY = (Math.sin(endAngle) * side).toFloat()
-        l(startX, startY)
-        a(side, -side, 0, angle > 180, false, endX - startX, endY - startY)
+    fun circle(p: Point, sweep: Boolean = false) {
+        arc(p, sweep = sweep)
+        arc(-p, sweep = sweep)
         z()
     }
 
-    fun arc(orientation: Int, angle: Int, distance: Float, width: Float) {
-        val startAngle = (orientation - angle / 2) * Math.PI / 180
-        val endAngle = (orientation + angle / 2) * Math.PI / 180
-        val innerStartX = (Math.cos(startAngle) * distance).toFloat()
-        val innerStartY = (Math.sin(startAngle) * distance).toFloat()
-        val innerEndX = (Math.cos(endAngle) * distance).toFloat()
-        val innerEndY = (Math.sin(endAngle) * distance).toFloat()
-        val outerStartX = (Math.cos(endAngle) * (distance + width)).toFloat()
-        val outerStartY = (Math.sin(endAngle) * (distance + width)).toFloat()
-        val outerEndX = (Math.cos(startAngle) * (distance + width)).toFloat()
-        val outerEndY = (Math.sin(startAngle) * (distance + width)).toFloat()
-        backup()
-        m(innerStartX, innerStartY)
-        a(distance, -distance, 0, angle > 180, false, innerEndX - innerStartX, innerEndY - innerStartY)
-        l(outerStartX - innerEndX, outerStartY - innerEndY)
-        a(distance + width, distance + width, 0, angle > 180, false, outerEndX - outerStartX, outerEndY - outerStartY)
+    fun Sector(orientation: Double, angle: Double, side: Double) {
+        val startAngle = orientation - angle / 2
+        val endAngle = orientation + angle / 2
+        val start = point.moveOrientation(startAngle, side)
+        val end = point.moveOrientation(endAngle, side)
+        val p0 = point
+        Line(start)
+        Arc(end, side, angle > PI)
+        Line(p0)
         z()
-        restore()
+    }
+
+    fun sector(orientation: Double, angle: Double, side: Double) {
+        val startAngle = orientation - angle / 2
+        val endAngle = orientation + angle / 2
+        val start = origin.moveOrientation(startAngle, side)
+        val end = origin.moveOrientation(endAngle, side)
+        line(start)
+        arc(end, side, angle > PI)
+        line(-end)
+        z()
     }
 }

@@ -8,7 +8,9 @@ class Tag(val name: String, val attributes: Map<String, String>, val children: L
     constructor(name: String, attrs: Iterable<Pair<String, String>>) : this(name, attrs.toMap(), listOf())
     constructor(name: String, vararg attrs: Pair<String, String>) : this(name, attrs.toMap(), listOf())
 
-    fun set(vararg childn: Node): Tag = Tag(name, attributes, children + childn)
+    fun set(vararg node: Node) = Tag(name, attributes, node.asList())
+    fun append(vararg node: Node) = Tag(name, attributes, children + node)
+    fun merge(atag: Tag): Tag = Tag(name, attributes, children + atag.children)
     override fun output(handler: TransformerHandler) {
         val attrs = AttributesImpl().also {
             attributes.forEach { t, u -> it.addAttribute("", "", t, "", u) }

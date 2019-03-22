@@ -1,20 +1,20 @@
 package p8499.style
 
 import p8499.style.color.Color
-import p8499.style.xml.Node
+import p8499.style.xml.Tag
 import java.io.File
 
 interface StyleItem {
-    fun text(styleGroup: StyleGroup, style: Style): String
+    fun text(): String
 }
 
 fun Any?.styleItem() = object : StyleItem {
-    override fun text(styleGroup: StyleGroup, style: Style): String = this@styleItem?.toString() ?: "@null"
+    override fun text(): String = this@styleItem?.toString() ?: "@null"
 }
 
-interface Selector {
+interface Resource {
     val name: String
-    fun print(folder: File, styleGroup: StyleGroup, style: Style): File
+    fun print(folder: File): File
 }
 
 val Int.dp: String get() = "${this}dp"
@@ -45,12 +45,33 @@ operator fun Pair<String, Boolean>.not(): Pair<String, Boolean> = this.first to 
 operator fun Pair<String, Boolean>.plus(another: Pair<String, Boolean>): Set<Pair<String, Boolean>> = setOf(this, another)
 operator fun Set<Pair<String, Boolean>>.plus(new: Pair<String, Boolean>): Set<Pair<String, Boolean>> = setOf(*toTypedArray(), new)
 operator fun Set<Pair<String, Boolean>>.minus(target: Pair<String, Boolean>): Set<Pair<String, Boolean>> = dropWhile { it == target }.toSet()
+
 val emptyCondition: Set<Pair<String, Boolean>> = setOf()
 fun Pair<String, Boolean>.condition(): Set<Pair<String, Boolean>> = setOf(this)
-fun Map<Set<Pair<String, Boolean>>, Node>.drawableSelector(name: String) = DrawableSelector(name, this)
-fun Map<Set<Pair<String, Boolean>>, Node>.animatorSelector(name: String) = AnimatorSelector(name, this)
-fun Map<Set<Pair<String, Boolean>>, Color>.colorSelector(name: String) = ColorSelector(name, this)
+fun Set<Pair<String, Boolean>>.covers(precise: Set<Pair<String, Boolean>>): Boolean {
+    forEach { if (!precise.contains(it)) return false }
+    return true
+}
 
+fun Tag.drawable(name: String) = Drawable(name, this)
+fun Tag.animator(name: String) = Animator(name, this)
+fun Map<Set<Pair<String, Boolean>>, Tag>.drawableSelector(name: String) = DrawableSelector(name, toMutableMap())
+fun Map<Set<Pair<String, Boolean>>, Tag>.animatorSelector(name: String) = AnimatorSelector(name, toMutableMap())
+fun Map<Set<Pair<String, Boolean>>, Color>.colorSelector(name: String) = ColorSelector(name, toMutableMap())
+
+fun Drawable.forStyle(style: Style) = clone("${style.name}_$name")
+fun Animator.forStyle(style: Style) = clone("${style.name}_$name")
+fun DrawableSelector.forStyle(style: Style) = clone("${style.name}_$name")
+fun AnimatorSelector.forStyle(style: Style) = clone("${style.name}_$name")
+fun ColorSelector.forStyle(style: Style) = clone("${style.name}_$name")
+
+fun colorPrimaryDark(item: StyleItem): Style = Style("", mapOf("colorPrimaryDark" to item))
+fun colorPrimary(item: StyleItem): Style = Style("", mapOf("colorPrimary" to item))
+fun colorAccent(item: StyleItem): Style = Style("", mapOf("colorAccent" to item))
+fun android_windowFullscreen(item: StyleItem): Style = Style("", mapOf("android:windowFullscreen" to item))
+fun android_windowNoTitle(item: StyleItem): Style = Style("", mapOf("android:windowNoTitle" to item))
+fun windowActionBar(item: StyleItem): Style = Style("", mapOf("windowActionBar" to item))
+fun windowNoTitle(item: StyleItem): Style = Style("", mapOf("windowNoTitle" to item))
 fun android_layout_width(item: StyleItem): Style = Style("", mapOf("android:layout_width" to item))
 fun android_layout_height(item: StyleItem): Style = Style("", mapOf("android:layout_height" to item))
 fun android_layout_weight(item: StyleItem): Style = Style("", mapOf("android:layout_weight" to item))
@@ -106,7 +127,6 @@ fun iconifiedByDefault(item: StyleItem): Style = Style("", mapOf("iconifiedByDef
 fun queryBackground(item: StyleItem): Style = Style("", mapOf("queryBackground" to item))
 fun searchHintIcon(item: StyleItem): Style = Style("", mapOf("searchHintIcon" to item))
 fun searchIcon(item: StyleItem): Style = Style("", mapOf("searchIcon" to item))
-
 fun contentScrim(item: StyleItem): Style = Style("", mapOf("contentScrim" to item))
 fun layout_scrollFlags(item: StyleItem): Style = Style("", mapOf("layout_scrollFlags" to item))
 fun android_fillViewport(item: StyleItem): Style = Style("", mapOf("android:fillViewport" to item))
@@ -118,3 +138,5 @@ fun android_drawableTop(item: StyleItem): Style = Style("", mapOf("android:drawa
 fun android_drawableBottom(item: StyleItem): Style = Style("", mapOf("android:drawableBottom" to item))
 fun android_drawableStart(item: StyleItem): Style = Style("", mapOf("android:drawableStart" to item))
 fun android_drawableEnd(item: StyleItem): Style = Style("", mapOf("android:drawableEnd" to item))
+fun android_track(item: StyleItem): Style = Style("", mapOf("android:track" to item))
+fun android_thumb(item: StyleItem): Style = Style("", mapOf("android:thumb" to item))
