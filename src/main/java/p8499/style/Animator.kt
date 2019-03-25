@@ -29,6 +29,7 @@ class Animator(override val name: String, val node: Tag) : StyleItem, Resource {
         handler.endDocument()
         outputStream.flush()
         outputStream.close()
+        println("write: ${file.absolutePath}")
         return file
     }
 }

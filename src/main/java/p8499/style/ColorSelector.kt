@@ -41,6 +41,7 @@ class ColorSelector(override val name: String, val map: MutableMap<Set<Pair<Stri
         handler.endDocument()
         outputStream.flush()
         outputStream.close()
+        println("write: ${file.absolutePath}")
         return file
     }
 }

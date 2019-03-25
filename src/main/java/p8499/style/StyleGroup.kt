@@ -35,6 +35,7 @@ class StyleGroup(val name: String, val styleList: MutableList<Style> = mutableLi
         handler.endDocument()
         outputStream.flush()
         outputStream.close()
+        println("write: ${file.absolutePath}")
         return file
     }
 }

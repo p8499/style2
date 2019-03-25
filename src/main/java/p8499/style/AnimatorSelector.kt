@@ -51,6 +51,7 @@ class AnimatorSelector(override val name: String, val map: MutableMap<Set<Pair<S
         handler.endDocument()
         outputStream.flush()
         outputStream.close()
+        println("write: ${file.absolutePath}")
         return file
     }
 }

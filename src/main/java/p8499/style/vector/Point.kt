@@ -17,5 +17,5 @@ data class Point(val x: Double, val y: Double) {
     fun left(distance: Double): Point = moveXy(-distance, 0.0)
     fun right(distance: Double): Point = moveXy(distance, 0.0)
     fun circle(radius: Double): Circle = Circle(this, radius)
-    fun line(p2: Point): Line = Line(this, p2)
+    fun line(p2: Point): StraightLine = StraightLine(this, p2)
 }
